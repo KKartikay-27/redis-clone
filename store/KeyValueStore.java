@@ -1,26 +1,25 @@
 package store;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class KeyValueStore {
 
-    private final Map<String, String> store;
+    private final ConcurrentHashMap<String, String> store;
 
     public KeyValueStore() {
-        this.store = new HashMap<>();
+        this.store = new ConcurrentHashMap<>();
     }
 
-    public synchronized String set(String key, String value) {
+    public String set(String key, String value) {
         store.put(key, value);
         return "OK";
     }
 
-    public synchronized String get(String key) {
+    public String get(String key) {
         return store.getOrDefault(key, "NULL");
     }
 
-    public synchronized String del(String key) {
+    public String del(String key) {
         return store.remove(key) != null ? "1" : "0";
     }
 }

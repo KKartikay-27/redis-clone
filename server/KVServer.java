@@ -1,12 +1,12 @@
 package server;
 
+import store.KeyValueStore;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import store.KeyValueStore;
 
 public class KVServer {
 
@@ -26,8 +26,9 @@ public class KVServer {
 
         while (true) {
             Socket clientSocket = serverSocket.accept();
-            System.out.println("Client connected");
+            System.out.println("Client connected: " + clientSocket.getRemoteSocketAddress());
 
+            // ✅ THIS is the key change
             threadPool.submit(new ClientHandler(clientSocket, store));
         }
     }

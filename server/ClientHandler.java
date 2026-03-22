@@ -29,7 +29,6 @@ public class ClientHandler implements Runnable {
             while ((line = in.readLine()) != null) {
                 String[] tokens = CommandParser.parse(line);
                 if (tokens == null) {
-                    out.println("ERROR");
                     continue;
                 }
 
@@ -37,10 +36,21 @@ public class ClientHandler implements Runnable {
 
                 switch (command) {
                     case "SET":
-                        if (tokens.length != 3) {
+                        if (tokens.length < 3) {
                             out.println("ERROR");
                         } else {
-                            out.println(store.set(tokens[1], tokens[2]));
+                            String key = tokens[1];
+
+                            StringBuilder valueBuilder = new StringBuilder();
+                            for (int i = 2; i < tokens.length; i++) {
+                                valueBuilder.append(tokens[i]);
+                                if (i != tokens.length - 1) {
+                                    valueBuilder.append(" ");
+                                }
+                            }
+
+                            String value = valueBuilder.toString();
+                            out.println(store.set(key, value));
                         }
                         break;
 
@@ -66,7 +76,7 @@ public class ClientHandler implements Runnable {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Client disconnected: " + socket.getRemoteSocketAddress());
         }
     }
 }
