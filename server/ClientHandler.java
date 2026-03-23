@@ -41,16 +41,31 @@ public class ClientHandler implements Runnable {
                         } else {
                             String key = tokens[1];
 
+                            Long ttl = null;
+                            int valueEndIndex = tokens.length;
+
+                            // Check if EX exists
+                            if (tokens.length >= 5 && tokens[tokens.length - 2].equalsIgnoreCase("EX")) {
+                                try {
+                                    ttl = Long.parseLong(tokens[tokens.length - 1]);
+                                    valueEndIndex = tokens.length - 2;
+                                } catch (NumberFormatException e) {
+                                    out.println("ERROR");
+                                    break;
+                                }
+                            }
+
+                            // Build value
                             StringBuilder valueBuilder = new StringBuilder();
-                            for (int i = 2; i < tokens.length; i++) {
+                            for (int i = 2; i < valueEndIndex; i++) {
                                 valueBuilder.append(tokens[i]);
-                                if (i != tokens.length - 1) {
+                                if (i != valueEndIndex - 1) {
                                     valueBuilder.append(" ");
                                 }
                             }
 
                             String value = valueBuilder.toString();
-                            out.println(store.set(key, value));
+                            out.println(store.set(key, value, ttl));
                         }
                         break;
 

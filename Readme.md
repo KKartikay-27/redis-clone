@@ -16,6 +16,12 @@ A minimal in-memory key-value store built from scratch with TCP networking and c
 - Graceful handling of empty input
 - Fixed switch-case fall-through bug
 
+### Phase 3
+- TTL (Time-To-Live) support using `SET key value EX <seconds>`
+- Lazy expiration: keys expire on access
+- Expiry tracking using timestamp-based approach
+- Correct handling of TTL overwrite
+
 ---
 
 ## How It Works
@@ -57,14 +63,20 @@ SET bio I am building a redis clone
 GET bio
 ```
 
+TTL support:
+```bash
+SET session user123 EX 5
+GET session
+```
+
 ## Limitations (Current)
 - Values are not whitespace-preserving (multiple spaces collapse)
 - No persistence (data is lost on restart)
-- No expiry (TTL not implemented yet)
+- TTL is implemented, but expiration occurs after a delay (lazy expiration).
 - Simple string-based protocol (not binary-safe)
 
 ## Next Steps
-- Add TTL (key expiration)
+- Add optimized TTL (key expiration)
 - Implement LRU eviction
 - Add persistence to disk
 - Improve protocol (length-based / RESP-like)
