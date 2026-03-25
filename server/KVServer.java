@@ -24,6 +24,17 @@ public class KVServer {
         ServerSocket serverSocket = new ServerSocket(port);
         System.out.println("Server started on port " + port);
 
+        new Thread(() -> {
+        while (true) {
+                try {
+                    store.cleanupExpiredKeys();
+                    Thread.sleep(1000); 
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }).start();
+
         while (true) {
             Socket clientSocket = serverSocket.accept();
             System.out.println("Client connected: " + clientSocket.getRemoteSocketAddress());
